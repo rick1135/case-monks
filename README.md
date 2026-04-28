@@ -71,7 +71,7 @@ Arquivo final de apresentação (já pronto para submissão):
 
 ### 5.1 Remoção de duplicatas (152 linhas)
 
-A base estava inflada por duplicidades de oportunidade. A remoção de 152 linhas foi necessária para evitar:
+A base estava inflada por duplicidades de oportunidade, então removi 152 linhas para evitar:
 
 - inflação artificial do pipeline;
 - previsão de receita superestimada;
@@ -82,11 +82,15 @@ Regra aplicada por `Opportunity_ID`:
 1. manter o registro com **maior completude** (mais campos úteis preenchidos);
 2. em empate, manter o de **`Created_Date` mais antiga**.
 
+Com esse critério, melhoro a consistência analítica e reduzo ruído operacional sem descaracterizar o histórico comercial.
+
 ### 5.2 Tratamento de nulos
 
 - `Opportunity_ID` nulo/vazio: remoção do registro (sem chave mínima de rastreabilidade).
 - Campos categóricos nulos: preenchimento com `Unknown`.
 - Campos numéricos nulos: preenchimento com `0` após parse robusto.
+
+Meu racional de negócio aqui foi preservar continuidade das análises, explicitar ausência de informação e evitar que dashboards/indicadores quebrem por dados faltantes.
 
 ### 5.3 Consistência cambial
 
@@ -96,7 +100,7 @@ Regra aplicada por `Opportunity_ID`:
 
 ## 6) Interação com IA
 
-Durante o desenvolvimento, utilizamos LLMs como **assistentes de codificação** em um fluxo de revisão técnica Sênior/Pleno para:
+Durante o desenvolvimento, utilizei LLMs como **assistentes de codificação** em um fluxo de revisão técnica Sênior/Pleno para:
 
 - estruturar e refinar scripts Python;
 - revisar regras de limpeza e validação;
