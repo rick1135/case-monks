@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Relatório de Erros - Limpeza de Oportunidades</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --border: #d9e1ee;
+      --text: #162235;
+      --muted: #52627a;
+      --accent: #0b66ff;
+      --ok: #0d9488;
+      --warn: #b45309;
+      --shadow: 0 10px 26px rgba(10, 30, 70, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #f8fbff 0%, var(--bg) 58%);
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 24px 16px 40px;
+    }
+    .hero {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 1.7rem;
+    }
+    h2 {
+      margin: 0 0 12px;
+      font-size: 1.2rem;
+    }
+    .muted {
+      margin: 0;
+      color: var(--muted);
+    }
+    .section {
+      margin-top: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+    .grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fbfdff;
+    }
+    .label {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 6px;
+    }
+    .value {
+      font-size: 1.35rem;
+      font-weight: 650;
+      color: var(--text);
+    }
+    .highlight {
+      margin-top: 14px;
+      border-left: 4px solid var(--warn);
+      background: #fffaf2;
+      padding: 12px;
+      border-radius: 8px;
+    }
+    ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+    li + li {
+      margin-top: 8px;
+    }
+    .tag {
+      display: inline-block;
+      background: #edf4ff;
+      color: #1147a8;
+      border: 1px solid #c8dbff;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.82rem;
+      margin-top: 10px;
+    }
+    @media (max-width: 640px) {
+      h1 { font-size: 1.35rem; }
+      .container { padding: 16px 10px 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>Relatório de Erros e Qualidade de Dados</h1>
+      <p class="muted">Base analisada: <strong>opps_corrigido.xlsx</strong>. Este relatório consolida os resultados reais da limpeza e orienta prevenção de recorrência.</p>
+      <div class="tag">Fase 3 · Relatório executivo</div>
+    </section>
+
+    <section class="section">
+      <h2>1) Sumário executivo</h2>
+      <div class="grid">
+        
+        <div class="card">
+          <div class="label">Linhas iniciais</div>
+          <div class="value">413</div>
+        </div>
+        
+
+        <div class="card">
+          <div class="label">Linhas removidas por Opportunity_ID nulo/blank</div>
+          <div class="value">0</div>
+        </div>
+        
+
+        <div class="card">
+          <div class="label">Duplicatas removidas</div>
+          <div class="value">152</div>
+        </div>
+        
+
+        <div class="card">
+          <div class="label">Falhas de parse de números</div>
+          <div class="value">0</div>
+        </div>
+        
+
+        <div class="card">
+          <div class="label">Conflitos cambiais corrigidos</div>
+          <div class="value">0</div>
+        </div>
+        
+
+        <div class="card">
+          <div class="label">Linhas finais</div>
+          <div class="value">261</div>
+        </div>
+        
+      </div>
+      <div class="highlight">
+        <strong>Leitura principal:</strong> 152 duplicatas removidas em 413 linhas iniciais
+        (36.8% do volume bruto), com base final de 261 oportunidades válidas.
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>2) Impacto das duplicatas no negócio</h2>
+      <ul>
+        <li><strong>Pipeline inflado:</strong> oportunidades repetidas aumentam artificialmente o valor em aberto e distorcem a capacidade real de conversão.</li>
+        <li><strong>Forecast comprometido:</strong> projeções de receita ficam superestimadas, elevando risco de erro em metas trimestrais e planejamento de caixa.</li>
+        <li><strong>Prioridade comercial equivocada:</strong> times podem dedicar esforço duplicado ao mesmo negócio enquanto oportunidades reais recebem menor atenção.</li>
+        <li><strong>KPIs de produtividade degradados:</strong> métricas de cobertura, aging e taxa de avanço por estágio perdem confiabilidade para gestão executiva.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>3) Recomendações acionáveis de processo</h2>
+      <ul>
+        <li><strong>Salesforce Validation Rules:</strong> bloquear gravação/edição com campos críticos vazios ou fora do padrão (ID, Stage, Close Date, Amount).</li>
+        <li><strong>Deduplicação por chave:</strong> aplicar chave canônica (`Opportunity_ID` + `Account_ID`) com trava de unicidade e rotina automática de merge.</li>
+        <li><strong>Travas de estágio/campo:</strong> exigir consistência mínima por estágio (ex.: probabilidade, valor e data de fechamento obrigatórios para avanço).</li>
+        <li><strong>Monitoramento de qualidade:</strong> painel semanal de anomalias (duplicatas, nulos críticos, outliers de valor e datas inválidas) com SLA por squad.</li>
+        <li><strong>Governança operacional:</strong> definir dono de dado por área e revisão mensal de regras para evitar regressão de qualidade no funil.</li>
+      </ul>
+    </section>
+  </div>
+</body>
+</html>
