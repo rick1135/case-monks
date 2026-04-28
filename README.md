@@ -2,50 +2,39 @@
 
 ## 1) Visão Geral da Solução
 
-Este case organiza uma base comercial com problemas de qualidade para transformar dados brutos em informação confiável para decisão de negócio.
+Este case foi desenvolvido como um pipeline RevOps **em fases rigorosas (checkpoints)** para garantir qualidade, rastreabilidade e confiabilidade da análise:
 
-Em termos práticos, a solução:
+1. **Extração e inspeção inicial da base**
+2. **Limpeza e padronização dos dados**
+3. **Validação da qualidade (relatório de erros)**
+4. **Análise de pipeline e geração de insights**
+5. **Síntese executiva final**
 
-- limpa inconsistências estruturais da base de oportunidades;
-- elimina duplicidades que inflavam o pipeline;
-- padroniza campos críticos (datas, valores e moedas);
-- gera entregáveis executivos para tomada de decisão.
+Essa abordagem faseada permite rastrear claramente **o que entrou, o que foi transformado, por que foi transformado e qual impacto cada ajuste teve no resultado final**.
 
-Resumo do resultado final:
+Resumo do resultado:
 
 - Base original: **413 linhas**
-- Base limpa: **261 linhas**
+- Base final limpa: **261 linhas**
 - Duplicatas removidas: **152 linhas**
 
-## 2) Fluxo de Trabalho (Ponta a Ponta)
-
-1. **Limpeza de dados (`src/cleaning.py`)**
-   Aplica regras de qualidade, deduplicação e padronização.
-2. **Relatório de qualidade (`src/error_report.py`)**
-   Gera visão executiva dos problemas encontrados e impacto.
-3. **Análise comercial (`src/analysis_report.py`)**
-   Produz visualizações e insights de pipeline.
-4. **Apresentação final (`src/presentation.py`)**
-   Consolida narrativa executiva em PDF (5 páginas).
-
-## 3) Estrutura do Projeto
+## 2) Estrutura do Projeto
 
 ```text
 case-monks/
 |-- opps_corrupted.xlsx        # Base original (entrada)
 |-- opps_corrigido.xlsx        # Base limpa (saída)
-|-- relatorio_erros.html       # Relatório de qualidade de dados
-|-- analise.html               # Análise comercial com gráficos
+|-- relatorio_erros.html       # Validação e auditoria de qualidade
+|-- analise.html               # Análise comercial com gráficos e insights
 |-- apresentacao.pdf           # Apresentação executiva final
 |-- README.md
 `-- src/
-    |-- cleaning.py            # Limpeza e padronização dos dados
-    |-- error_report.py        # Relatório de erros e riscos
-    |-- analysis_report.py     # Análise comercial
-    `-- presentation.py        # Geração da apresentação em PDF
+    |-- cleaning.py            # Limpeza e padronização
+    |-- error_report.py        # Relatório de erros
+    `-- analysis_report.py     # Relatório analítico
 ```
 
-## 4) Dependências e Setup
+## 3) Dependências e Setup
 
 Pré-requisitos:
 
@@ -55,10 +44,10 @@ Pré-requisitos:
 Instalação das bibliotecas:
 
 ```bash
-python -m pip install pandas numpy openpyxl plotly reportlab
+python -m pip install pandas numpy openpyxl plotly
 ```
 
-## 5) Como Executar (Comandos Exatos)
+## 4) Como Executar (Ponta a Ponta)
 
 No diretório raiz do projeto:
 
@@ -66,7 +55,6 @@ No diretório raiz do projeto:
 python src/cleaning.py
 python src/error_report.py
 python src/analysis_report.py
-python src/presentation.py
 ```
 
 Arquivos gerados:
@@ -74,70 +62,71 @@ Arquivos gerados:
 - `opps_corrigido.xlsx`
 - `relatorio_erros.html`
 - `analise.html`
+
+Arquivo final de apresentação (já pronto para submissão):
+
 - `apresentacao.pdf`
 
-## 6) O que Cada Artefato Responde
+## 5) Premissas de Negócio
 
-- **`opps_corrigido.xlsx`**
-  “Qual é a base confiável para gestão e análise comercial?”
+### 5.1 Remoção de duplicatas (152 linhas)
 
-- **`relatorio_erros.html`**
-  “Quais problemas de qualidade existiam e qual o impacto no negócio?”
+A base estava inflada por duplicidades de oportunidade. A remoção de 152 linhas foi necessária para evitar:
 
-- **`analise.html`**
-  “Como o pipeline está distribuído e onde estão os principais focos de ação?”
-
-- **`apresentacao.pdf`**
-  “Qual a narrativa final para liderança: contexto, achados, recomendações e aprendizados?”
-
-## 7) Premissas de Negócio (Crítico)
-
-### 7.1 Remoção de 152 duplicatas
-
-A remoção de **152 duplicatas** foi necessária para evitar distorções de gestão, principalmente:
-
-- inflação artificial de pipeline;
+- inflação artificial do pipeline;
 - previsão de receita superestimada;
 - priorização comercial incorreta.
 
-Critério adotado para manter apenas 1 registro por oportunidade (`Opportunity_ID`):
+Regra aplicada por `Opportunity_ID`:
 
-1. **Maior completude de campos** (registro com mais informação útil).
-2. Em caso de empate, **`Created_Date` mais antiga** (registro pioneiro, mais estável para histórico).
+1. manter o registro com **maior completude** (mais campos úteis preenchidos);
+2. em empate, manter o de **`Created_Date` mais antiga**.
 
-Esse critério melhora consistência analítica e reduz ruído operacional sem descaracterizar o histórico comercial.
+### 5.2 Tratamento de nulos
 
-### 7.2 Tratamento de nulos
+- `Opportunity_ID` nulo/vazio: remoção do registro (sem chave mínima de rastreabilidade).
+- Campos categóricos nulos: preenchimento com `Unknown`.
+- Campos numéricos nulos: preenchimento com `0` após parse robusto.
 
-Regras aplicadas:
+### 5.3 Consistência cambial
 
-- remoção de `Opportunity_ID` nulo/vazio (sem chave mínima de rastreabilidade);
-- preenchimento de nulos categóricos com **`Unknown`**;
-- preenchimento de nulos numéricos com **`0`**, após parse robusto.
+- Harmonização entre `Amount_Currency` e `Total_Product_Amount_Currency`.
+- Padronização de código monetário por linha.
+- **Sem conversão FX** (não há taxa/data de câmbio confiáveis no dataset).
 
-Racional de negócio: preservar continuidade das análises, explicitar ausência de informação e evitar que dashboards/indicadores quebrem por dados faltantes.
+## 6) Interação com IA
 
-### 7.3 Regra cambial sem conversão FX
+Durante o desenvolvimento, utilizamos LLMs como **assistentes de codificação** em um fluxo de revisão técnica Sênior/Pleno para:
 
-Regra adotada:
+- estruturar e refinar scripts Python;
+- revisar regras de limpeza e validação;
+- elevar clareza e robustez dos entregáveis técnicos.
 
-- harmonizar `Amount_Currency` e `Total_Product_Amount_Currency` na mesma linha;
-- padronizar código monetário;
-- **não converter valores entre moedas**.
+Além disso, o **Google NotebookLM** foi utilizado para:
 
-Justificativa: sem taxa e data de câmbio confiáveis no dataset, qualquer conversão FX introduziria risco de distorção financeira. A prioridade foi consistência de classificação, não recalcular valores.
+- sintetizar a narrativa de negócios;
+- apoiar a interpretação dos insights extraídos;
+- gerar o design e a narrativa do arquivo final **`apresentacao.pdf`**.
+
+## 7) Entregáveis Finais do Case
+
+- `opps_corrigido.xlsx`
+- `relatorio_erros.html`
+- `analise.html`
+- `apresentacao.pdf`
+- `README.md`
 
 ## 8) Limitações e Próximos Passos
 
 Limitações atuais:
 
-- sem política de FX histórico para consolidação em moeda única;
-- dependência de qualidade de entrada no CRM;
-- insights sujeitos à atualização da base e sazonalidade comercial.
+- ausência de política de FX histórico para consolidação em moeda única;
+- dependência de qualidade da entrada no CRM;
+- insights sensíveis à atualização de base e sazonalidade.
 
 Próximos passos recomendados:
 
-1. Criar validações obrigatórias por estágio no CRM (campos críticos).
-2. Bloquear duplicidade na origem com chave canônica (`Opportunity_ID` + `Account_ID`).
-3. Instituir monitoramento semanal de qualidade (duplicatas, nulos críticos, datas inválidas, outliers).
-4. Definir governança formal de dados com responsável de negócio por domínio comercial.
+1. Validation rules por estágio no CRM.
+2. Bloqueio de duplicidade por chave canônica (`Opportunity_ID` + `Account_ID`).
+3. Monitoramento recorrente de qualidade de dados (SLA e data owner).
+4. Evolução para camada contínua de governança RevOps.
