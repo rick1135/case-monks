@@ -1,0 +1,300 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Operations | Alberto Henrique</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #1a1a1a;
+            --text-muted: #666666;
+            --border-color: #e5e5e5;
+            --accent: #FF4A00; /* Laranja Monks */
+            --bg-muted: #f9f9f9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-muted);
+            color: var(--text-main);
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .document-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--bg-color);
+            padding: 60px 80px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02), 0 1px 3px rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border-color);
+        }
+
+        header {
+            margin-bottom: 50px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 15px;
+            color: var(--text-main);
+        }
+
+        .metadata {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .metadata span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 18px;
+            background-color: var(--accent);
+            border-radius: 2px;
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: #333;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .stat-box {
+            background: var(--bg-muted);
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-box .num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.2;
+        }
+
+        .stat-box .label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .file-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 10px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+            background: var(--bg-color);
+        }
+
+        .file-item:hover {
+            border-color: var(--accent);
+            background: #fffafa;
+            transform: translateX(4px);
+        }
+
+        .file-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+
+        .file-details {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            color: var(--accent);
+            margin-bottom: 2px;
+        }
+
+        .file-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .insight-list {
+            list-style: none;
+        }
+
+        .insight-list li {
+            margin-bottom: 15px;
+            padding-left: 24px;
+            position: relative;
+            font-size: 0.95rem;
+        }
+
+        .insight-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .document-container { padding: 30px 20px; }
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="document-container">
+        <header>
+            <h1>Análise de Pipeline & Revenue Operations</h1>
+            <div class="metadata">
+                <span>👤 Candidato: Alberto Henrique M. Ribeiro</span>
+                <span>🏢 Processo: Case Estágio Operations (Monks)</span>
+                <span>📅 Status: Finalizado</span>
+            </div>
+        </header>
+
+        <section>
+            <p>Este documento consolida a entrega do case técnico para a vaga de Estágio em Operations. O projeto consistiu em uma auditoria profunda da base de dados do pipeline comercial, aplicando metodologias de limpeza, deduplicação e padronização cambial para garantir a confiabilidade dos indicadores executivos.</p>
+        </section>
+
+        <section>
+            <h2>Impacto da Limpeza de Dados</h2>
+            <p>A base original apresentava anomalias estruturais, principalmente devido à granularidade errônea (dados no nível de produto ao invés de oportunidade). A aplicação de regras de completude e desempate resultou na seguinte consolidação:</p>
+            
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="num">413</div>
+                    <div class="label">Registros Originais</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" style="color: var(--accent);">-152</div>
+                    <div class="label">Duplicatas Removidas</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num">261</div>
+                    <div class="label">Deals Únicos e Validados</div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Artefatos e Entregáveis</h2>
+            <p>Abaixo estão os 4 arquivos finais gerados pelo fluxo de tratamento. Clique nos arquivos para visualizar os relatórios e documentos na íntegra:</p>
+
+            <ul class="file-list">
+                <a href="analise.html" target="_blank" class="file-item">
+                    <span class="file-icon">📊</span>
+                    <div class="file-details">
+                        <div class="file-name">analise.html</div>
+                        <div class="file-desc">Dashboard interativo construído com Plotly contendo insights sobre performance por canal e top clientes.</div>
+                    </div>
+                </a>
+
+                <a href="relatorio_erros.html" target="_blank" class="file-item">
+                    <span class="file-icon">⚠️</span>
+                    <div class="file-details">
+                        <div class="file-name">relatorio_erros.html</div>
+                        <div class="file-desc">Auditoria detalhada apontando os gargalos originais do CRM e recomendações de correção na origem.</div>
+                    </div>
+                </a>
+
+                <a href="apresentacao.pdf" target="_blank" class="file-item">
+                    <span class="file-icon">📄</span>
+                    <div class="file-details">
+                        <div class="file-name">apresentacao.pdf</div>
+                        <div class="file-desc">Pitch executivo estruturado com auxílio do NotebookLM, resumindo o impacto no negócio.</div>
+                    </div>
+                </a>
+
+                <a href="opps_corrigido.xlsx" class="file-item">
+                    <span class="file-icon">📗</span>
+                    <div class="file-details">
+                        <div class="file-name">opps_corrigido.xlsx</div>
+                        <div class="file-desc">Dataset consolidado (261 linhas) livre de duplicatas e inconsistências numéricas.</div>
+                    </div>
+                </a>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Principais Conclusões de Negócio</h2>
+            <ul class="insight-list">
+                <li><strong>Concentração de Receita:</strong> O estágio 'Closed Won' domina quase 40% do pipeline, sendo a alavanca principal de resultados e o maior ponto de risco em caso de churn.</li>
+                <li><strong>Desaceleração do Funil:</strong> Os dados limpos evidenciaram uma queda abrupta de 76,1% no valor de novas oportunidades nos meses mais recentes.</li>
+                <li><strong>Hygiene de CRM:</strong> A implementação de Validation Rules e chaves canônicas no Salesforce é urgente para evitar o superdimensionamento do forecast.</li>
+            </ul>
+        </section>
+
+        <footer>
+            Desenvolvido por Alberto Henrique para a Monks. <br>
+            Ferramentas: Python, Pandas, Plotly, Codex, Gemini e Google NotebookLM.
+        </footer>
+    </div>
+
+</body>
+</html>
